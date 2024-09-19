@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Euphoria</title>
+    <style>
+        :root {
+            --bg-color-dark: #1a1c23; /* Fundo escuro */
+            --text-color-dark: #e0e0e0; /* Texto branco suave */
+            --primary-color: #e94560; /* Vermelho vibrante como cor principal */
+            --highlight-color: #ff6f91; /* Rosa claro para interações */
+            --input-bg-color: #252836; /* Fundo dos inputs */
+            --input-border-color: #3b3f51; /* Bordas dos inputs */
+            --header-bg-color: #232530; /* Cor de fundo do header */
+            --bg-color-light: #f0f0f0; /* Fundo claro */
+            --text-color-light: #333; /* Texto escuro no modo claro */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color-dark); /* Fundo escuro */
+            color: var(--text-color-dark); /* Cor do texto */
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centraliza o conteúdo horizontalmente */
+            padding: 20px;
+            background: linear-gradient(90deg, #2e2f35, #1c1f26);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+            height: 80px;
+            color: var(--text-color-dark);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: var(--primary-color); /* Cor do título vermelho */
+        }
+
+        /* Estilo para a navegação */
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Espaçamento entre os itens */
+        }
+
+        /* Alinhamento da navegação ao centro */
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            color: var(--text-color-dark);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2rem;
+            transition: color 0.3s ease-in-out, border-bottom 0.3s ease-in-out;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        main {
+            margin-top: 100px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        section {
+            display: none; /* Esconder todas as seções por padrão */
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #2b2e3b; /* Fundo da seção */
+            border-radius: 10px;
+            max-width: 600px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .section.active {
+            display: block; /* Mostrar apenas a seção ativa */
+        }
+
+        h2 {
+            color: var(--primary-color); /* Títulos em vermelho */
+        }
+
+        p, label {
+            color: var(--text-color-dark);
+        }
+
+        /* Botões */
+        button {
+            padding: 10px 20px;
+            background-color: var(--primary-color); /* Botões em vermelho */
+            color: var(--text-color-dark);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--highlight-color); /* Hover dos botões em rosa claro */
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--input-bg-color);
+            color: var(--text-color-dark);
+            border: 1px solid var(--input-border-color);
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color); /* Borda vermelha ao focar */
+            outline: none;
+        }
+
+        /* Imagem de perfil no header */
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
+            display: none; /* Começa oculta */
+        }
+
+        /* Menu de perfil */
+        .profile-menu {
+            display: none;
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background-color: #333;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            z-index: 20;
+        }
+
+        .profile-menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .profile-menu ul li {
+            border-bottom: 1px solid #444;
+        }
+
+        .profile-menu ul li a {
+            display: block;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .profile-menu ul li a:hover {
+            background-color: var(--highlight-color); /* Rosa claro no hover */
+        }
+
+        /* Modo claro */
+        body.light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+
+        header.light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+        }
+
+        .light-mode .profile-pic, .light-mode nav a {
+            color: var(--text-color-light);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            nav a {
+                font-size: 1rem;
+            }
+        }
+
+        /* Estilos do toggle switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc; /* Cor de fundo quando não ativado */
+            transition: background-color 0.4s, transform 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: transform 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #ff5252; /* Cor quando ativado (vermelho) */
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px); /* Move a bolinha para a direita */
+        }
+
+        /* Estilo para modo claro */
+        body.light-mode .slider {
+            background-color: #00bcd4; /* Cor do slider quando no modo claro (azul claro) */
+        }
+
+        body.light-mode input:checked + .slider {
+            background-color: #ff5252; /* Cor do slider quando ativado no modo claro (vermelho) */
+        }
+    </style>
+</head>
+<body id="site-body">
+    <header>
+        <div style="display: flex; align-items: center;">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAA..." alt="Logo do site"> <!-- Logo incorporada -->
+            <h1>Euphoria</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" data-target="home">Início</a></li>
+                <li><a href="#" data-target="story">Campanha</a></li>
+                <li><a href="#" data-target="characters">Fichas</a></li>
+                <li><a href="#" data-target="info">Informações</a></li>
+                <li><a href="#" data-target="def">Definições</a></li>
+                <li><a href="#" data-target="login" id="login-link">Login</a></li>
+            </ul>
+            <img id="profile-picture" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAA..." alt="Foto de perfil" class="profile-pic">
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="section active">
+            <h2>Início</h2>
+            <p>Conteúdo da seção Início.</p>
+        </section>
+        <section id="story" class="section">
+            <h2>Campanha</h2>
+            <p>Conteúdo da seção Campanha.</p>
+        </section>
+        <section id="characters" class="section">
+            <h2>Fichas</h2>
+            <p>Conteúdo da seção Fichas.</p>
+        </section>
+        <section id="info" class="section">
+            <h2>Informações</h2>
+            <p>Conteúdo da seção Informações.</p>
+        </section>
+        <section id="def" class="section">
+            <h2>Modo Claro</h2>
+            <label class="toggle-switch">
+                <input type="checkbox" id="dark-mode-toggle">
+                <span class="slider"></span>
+            </label>
+        </section>
+        <section id="login" class="section">
+            <h2>Login</h2>
+            <form id="login-form">
+                <input type="text" placeholder="Usuário">
+                <input type="password" placeholder="Senha">
+                <button type="submit">Entrar</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleSwitch = document.getElementById('dark-mode-toggle');
+            const body = document.getElementById('site-body');
+            const sections = document.querySelectorAll('.section');
+            const links = document.querySelectorAll('nav a');
+            const profileImageInput = document.getElementById('profile-image');
+            const profilePicture = document.getElementById('profile-picture');
+            const loginLink = document.getElementById('login-link');
+            const loginForm = document.getElementById('login-form');
+
+            // Carregar o tema do localStorage se disponível
+            if (localStorage.getItem('dark-mode') === 'enabled') {
+                body.classList.add('light-mode');
+                toggleSwitch.checked = true;
+            }
+
+            toggleSwitch.addEventListener('change', () => {
+                if (toggleSwitch.checked) {
+                    body.classList.add('light-mode');
+                    localStorage.setItem('dark-mode', 'enabled');
+                } else {
+                    body.classList.remove('light-mode');
+                    localStorage.setItem('dark-mode', 'disabled');
+                }
+            });
+
+            // Gerenciar abas
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('data-target');
+                    
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // Atualizar a foto de perfil quando o usuário faz upload
+            profileImageInput?.addEventListener('change', function () {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        profilePicture.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Lidar com o formulário de login
+            loginForm?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert("Login bem-sucedido!");
+
+                // Esconde o link de login e mostra a foto de perfil
+                loginLink.style.display = 'none';
+                profilePicture.style.display = 'block';
+            });
+
+            // Exibir o menu ao clicar na bolinha de perfil
+            profilePicture.addEventListener('click', () => {
+                const profileMenu = document.querySelector('.profile-menu');
+                profileMenu.style.display = profileMenu.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Navegar para "Minha Conta"
+            document.getElementById('account-link')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                const profileMenu = document.querySelector('.profile-menu');
+                profileMenu.style.display = 'none';
+                
+                // Navegar para a aba "Minha Conta"
+                sections.forEach(section => section.classList.remove('active'));
+                document.getElementById('account').classList.add('active');
+
+                // Preencher os campos com as informações do usuário (usaremos valores fictícios aqui)
+                document.getElementById('account-name').value = 'Nome Exemplo';
+                document.getElementById('account-email').value = 'email@exemplo.com';
+                document.getElementById('account-password').value = 'senhaexemplo';
+                document.getElementById('account-profile-pic-preview').src = profilePicture.src; // Mostrar a imagem atual do perfil
+            });
+
+            // Lidar com logout
+            document.getElementById('logout-link')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert("Você foi desconectado!");
+
+                // Resetar para o estado de login
+                loginLink.style.display = 'block';
+                profilePicture.style.display = 'none';
+                document.querySelector('.profile-menu').style.display = 'none';
+
+                // Navegar para a tela de login
+                sections.forEach(section => section.classList.remove('active'));
+                document.getElementById('login').classList.add('active');
+            });
+
+            // Lidar com o formulário de alteração de conta
+            document.getElementById('account-form')?.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newName = document.getElementById('account-name').value;
+                const newEmail = document.getElementById('account-email').value;
+                const newPassword = document.getElementById('account-password').value;
+
+                alert('Informações da conta atualizadas!');
+                
+                // Aqui você poderia salvar as informações em localStorage ou backend
+                profilePicture.src = document.getElementById('account-profile-pic-preview').src; // Atualiza a imagem de perfil no menu
+            });
+
+            // Atualizar a foto de perfil na aba "Minha Conta"
+            document.getElementById('account-profile-image')?.addEventListener('change', function () {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('account-profile-pic-preview').src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
